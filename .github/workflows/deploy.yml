@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+permissions:
+  contents: write  # Ini sangat penting!
 jobs:
   build:
     runs-on: ubuntu-latest
