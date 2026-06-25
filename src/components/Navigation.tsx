@@ -16,10 +16,9 @@ import { motion } from "motion/react";
 interface NavigationProps {
   currentTab: string;
   onChangeTab: (tab: string) => void;
-  onOpenSeoOverlay: () => void;
 }
 
-export default function Navigation({ currentTab, onChangeTab, onOpenSeoOverlay }: NavigationProps) {
+export default function Navigation({ currentTab, onChangeTab }: NavigationProps) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const menuItems = [
@@ -67,16 +66,6 @@ export default function Navigation({ currentTab, onChangeTab, onOpenSeoOverlay }
 
           {/* Right Accessories (Technical SEO status & Contact Badge) */}
           <div className="hidden lg:flex items-center space-x-3" id="desktop-nav-accessories">
-            <button
-              onClick={onOpenSeoOverlay}
-              className="flex items-center space-x-1 px-3 py-1.5 rounded-full border border-emerald-100 bg-emerald-50/60 text-emerald-700 text-xs font-mono font-medium hover:bg-emerald-100 transition-colors cursor-pointer"
-              title="Periksa Kepatuhan Technical SEO & GEO"
-              id="btn-seo-diagnostics"
-            >
-              <Globe className="h-3.5 w-3.5 text-emerald-600 animate-pulse" />
-              <span>SEO/GEO Active</span>
-            </button>
-            
             <a 
               href="https://www.linkedin.com/in/ferlin-firdaus-turnip/"
               target="_blank"
@@ -90,13 +79,6 @@ export default function Navigation({ currentTab, onChangeTab, onOpenSeoOverlay }
 
           {/* Mobile Menu Icon */}
           <div className="flex md:hidden items-center space-x-2" id="mobile-nav-toggle-block">
-            <button
-              onClick={onOpenSeoOverlay}
-              className="p-1 px-2.5 rounded-full border border-emerald-100 bg-emerald-50/70 text-emerald-700 text-xs font-mono"
-              id="btn-nav-mobile-seo"
-            >
-              SEO
-            </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"

@@ -5,7 +5,6 @@ import Navigation from "./components/Navigation";
 import ResumeSection from "./components/ResumeSection";
 import PortfolioSection from "./components/PortfolioSection";
 import BlogSection from "./components/BlogSection";
-import SeoPanel from "./components/SeoPanel";
 
 // Lucide icon imports
 import { 
@@ -31,12 +30,51 @@ import { motion, AnimatePresence } from "motion/react";
 export default function App() {
   const [currentTab, setCurrentTab] = useState<string>("hero");
   const [activeBlogPost, setActiveBlogPost] = useState<BlogPost | null>(null);
-  const [isSeoOpen, setIsSeoOpen] = useState<boolean>(false);
 
   // Print function hook
   const handlePrint = () => {
     window.print();
   };
+
+  // Smooth scroll helper
+  const scrollToSection = (id: string) => {
+    setCurrentTab(id);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  // Track scroll position to update active navbar tab
+  useEffect(() => {
+    const sections = ["hero", "resume", "portfolio", "blog"];
+    const observers = sections.map((id) => {
+      const element = document.getElementById(id);
+      if (!element) return null;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setCurrentTab(id);
+          }
+        },
+        {
+          rootMargin: "-25% 0px -55% 0px", // triggers when section is in top-middle part of viewport
+          threshold: 0,
+        }
+      );
+      observer.observe(element);
+      return { observer, element, id };
+    });
+
+    return () => {
+      observers.forEach((obs) => {
+        if (obs) {
+          obs.observer.unobserve(obs.element);
+        }
+      });
+    };
+  }, []);
 
   // Dynamic Metadata Optimizer Hook inside head tag
   useEffect(() => {
@@ -141,245 +179,224 @@ export default function App() {
       <Navigation 
         currentTab={currentTab} 
         onChangeTab={(tab) => {
-          setCurrentTab(tab);
+          scrollToSection(tab);
           setActiveBlogPost(null); // Reset reading active post when switching menus
         }}
-        onOpenSeoOverlay={() => setIsSeoOpen(true)}
       />
 
       {/* Main Container - Wrap inside <main> for W3C SEO Compliance */}
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8" id="main-content-area">
-        <AnimatePresence mode="wait">
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-24" id="main-content-area">
+        
+        {/* SECTION 1: HERO / LANDING PAGE */}
+        <section id="hero" className="scroll-mt-24 space-y-12">
           
-          {/* TAB 1: HERO / LANDING PAGE */}
-          {currentTab === "hero" && (
-            <motion.div 
-              key="hero-view"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-12"
-              id="hero-view-container"
-            >
-              
-              {/* Introduction & Persona Card */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4" id="intro-grid">
-                
-                {/* Left: Text Briefing */}
-                <div className="lg:col-span-8 space-y-6" id="intro-text">
-                  <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 font-mono text-xs font-semibold animate-pulse">
-                    <Sparkles className="h-4 w-4" />
-                    <span>Tersedia untuk Peran IT PM, Lead PMO, / Sr. System Analyst</span>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h1 className="font-sans font-extrabold text-slate-900 text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight">
-                      Hi, Saya <span className="text-indigo-600 font-extrabold">{cvData.name}</span>
-                    </h1>
-                    <p className="font-sans font-bold text-slate-800 text-lg sm:text-xl lg:text-2xl mt-1 tracking-tight">
-                      {cvData.title}
-                    </p>
-                  </div>
-
-                  <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-3xl font-light">
-                    Lebih dari 6 tahun berkontribusi dalam menerjemahkan rancangan sistem kompleks menjadi solusi digital berdaya guna tinggi. Ahli dalam merestrukturisasi masterplan IT korporasi menggunakan framework **TOGAF 10**, mengatur alur Agile/Scrum, serta menyusun dokumentasi teknis (FSD/BRD) yang presisi.
-                  </p>
-
-                  {/* Immediate Action buttons */}
-                  <div className="flex flex-wrap gap-3 items-center" id="intro-actions">
-                    <button
-                      onClick={() => setCurrentTab("portfolio")}
-                      className="px-5 py-3 rounded-xl cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold flex items-center space-x-2 transition-all shadow-xs"
-                      id="btn-action-portfolio"
-                    >
-                      <span>Jelajahi Portofolio</span>
-                      <ArrowRight className="h-4 w-4" />
-                    </button>
-
-                    <button
-                      onClick={() => setCurrentTab("resume")}
-                      className="px-5 py-3 rounded-xl cursor-pointer bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-semibold flex items-center space-x-2 transition-all"
-                      id="btn-action-resume"
-                    >
-                      <span>Lihat Riwayat Kerja</span>
-                    </button>
-
-                    <button 
-                      onClick={handlePrint}
-                      className="p-3 border border-slate-200 bg-white text-slate-500 rounded-xl hover:text-indigo-600 hover:border-indigo-100 transition-all cursor-pointer"
-                      title="Cetak CV Lengkap (PDF friendly)"
-                      id="btn-action-print"
-                    >
-                      <Printer className="h-4 w-4" />
-                    </button>
-                  </div>
-
-                </div>
-
-                {/* Right: Personal Photo Card & Technical Badges */}
-                <div className="lg:col-span-4 lg:pl-4" id="photo-card-wrapper">
-                  <div className="border border-slate-100 p-6 rounded-2xl bg-white shadow-xs space-y-6 relative" id="photo-card">
-                    
-                    {/* Visual Photo (Placeholder styled beautifully to serve as branding) */}
-                    <div className="w-full h-56 rounded-xl bg-gradient-to-tr from-slate-900 via-indigo-950 to-indigo-900 border border-slate-800 flex flex-col justify-between p-5 text-white relative overflow-hidden">
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl"></div>
-                      
-                      <div className="flex justify-between items-start">
-                        <Terminal className="h-5 w-5 text-indigo-400" />
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-400/20">M.Kom</span>
-                      </div>
-
-                      <div className="space-y-1">
-                        <p className="font-mono text-[10px] tracking-widest text-indigo-300">SYSTEM ARCHITECT</p>
-                        <p className="font-sans font-bold text-base leading-tight">Ferlin F. Turnip</p>
-                        <p className="text-[11px] text-slate-400">Jakarta, ID • TOGAF 10</p>
-                      </div>
-                    </div>
-
-                    {/* Quick Contacts */}
-                    <div className="space-y-3.5 text-xs text-slate-600 font-mono" id="quick-contact-nodes">
-                      <div className="flex items-center space-x-2 border-b border-slate-50 pb-2">
-                        <Mail className="h-4 w-4 text-indigo-500 shrink-0" />
-                        <span className="truncate">{cvData.contact.email}</span>
-                      </div>
-
-                      <div className="flex items-center space-x-2 border-b border-slate-50 pb-2">
-                        <Phone className="h-4 w-4 text-emerald-500 shrink-0" />
-                        <span>{cvData.contact.phone}</span>
-                      </div>
-
-                      <div className="flex items-center space-x-2 pb-1">
-                        <MapPin className="h-4 w-4 text-rose-500 shrink-0" />
-                        <span>{cvData.contact.location}</span>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-
+          {/* Introduction & Persona Card */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4" id="intro-grid">
+            
+            {/* Left: Text Briefing */}
+            <div className="lg:col-span-8 space-y-6" id="intro-text">
+              <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 font-mono text-xs font-semibold animate-pulse">
+                <Sparkles className="h-4 w-4" />
+                <span>Tersedia untuk Peran IT PM, Lead PMO, / Sr. System Analyst</span>
               </div>
 
-              {/* Core Pillars / Expertise highlights (Bento Grid) */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4" id="bento-expertise">
-                
-                {/* Pillar 1 */}
-                <div className="p-6 bg-white border border-slate-100 rounded-2xl space-y-3 shadow-xs hover:border-indigo-100 transition-colors">
-                  <span className="p-1 px-2 text-[10px] bg-indigo-50 text-indigo-700 font-mono font-bold rounded">Pilar 1</span>
-                  <div className="flex items-center space-x-2">
-                    <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600"><Users className="h-4 w-4" /></div>
-                    <h3 className="font-sans font-bold text-slate-900 text-sm">IT Project Management</h3>
-                  </div>
-                  <p className="text-xs text-slate-500 leading-relaxed font-light">
-                    Siklus pengerjaan Agile/Scrum termonitor secara presisi (facilitating sprint planning, retrospectives, and requirements validation) bersertifikat PMI.
-                  </p>
-                </div>
-
-                {/* Pillar 2 */}
-                <div className="p-6 bg-white border border-slate-100 rounded-2xl space-y-3 shadow-xs hover:border-indigo-100 transition-colors">
-                  <span className="p-1 px-2 text-[10px] bg-emerald-50 text-emerald-700 font-mono font-bold rounded">Pilar 2</span>
-                  <div className="flex items-center space-x-2">
-                    <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600"><Files className="h-4 w-4" /></div>
-                    <h3 className="font-sans font-bold text-slate-900 text-sm">System Analysis & Specs</h3>
-                  </div>
-                  <p className="text-xs text-slate-500 leading-relaxed font-light">
-                    Penyusun dokumentasi teringkas dan termapan (BRD, FSD, Project Charter), pemodelan UML, normalisasi database MySQL/SQL Server serta rest API.
-                  </p>
-                </div>
-
-                {/* Pillar 3 */}
-                <div className="p-6 bg-white border border-slate-100 rounded-2xl space-y-3 shadow-xs hover:border-indigo-100 transition-colors">
-                  <span className="p-1 px-2 text-[10px] bg-amber-50 text-amber-700 font-mono font-bold rounded">Pilar 3</span>
-                  <div className="flex items-center space-x-2">
-                    <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600"><Award className="h-4 w-4" /></div>
-                    <h3 className="font-sans font-bold text-slate-900 text-sm">Enterprise Architecture</h3>
-                  </div>
-                  <p className="text-xs text-slate-500 leading-relaxed font-light">
-                    Penjaga standar tata kelola BUMN bersertifikat **TOGAF 10** dalam merancang Arsitektur Bisnis, Aplikasi, Data, dan Teknologi (dengan ArchiMate).
-                  </p>
-                </div>
-
+              <div className="space-y-2">
+                <h1 className="font-sans font-extrabold text-slate-900 text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight">
+                  Hi, Saya <span className="text-indigo-600 font-extrabold">{cvData.name}</span>
+                </h1>
+                <p className="font-sans font-bold text-slate-800 text-lg sm:text-xl lg:text-2xl mt-1 tracking-tight">
+                  {cvData.title}
+                </p>
               </div>
 
-              {/* Major Career Highlights Timeline */}
-              <div className="bg-white border border-slate-100 p-6 sm:p-8 rounded-2xl shadow-xs space-y-6" id="career-highlights">
-                <div className="space-y-1">
-                  <h3 className="font-sans font-bold text-slate-900 text-lg">Peta Karir & Pencapaian Penting</h3>
-                  <p className="text-xs text-slate-500">Milestone perjalanan profesional Ferlin merintis sistem integrasi nasional.</p>
-                </div>
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-3xl font-light">
+                Lebih dari 6 tahun berkontribusi dalam menerjemahkan rancangan sistem kompleks menjadi solusi digital berdaya guna tinggi. Ahli dalam merestrukturisasi masterplan IT korporasi menggunakan framework **TOGAF 10**, mengatur alur Agile/Scrum, serta menyusun dokumentasi teknis (FSD/BRD) yang presisi.
+              </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4" id="timeline-years">
+              {/* Immediate Action buttons */}
+              <div className="flex flex-wrap gap-3 items-center" id="intro-actions">
+                <button
+                  onClick={() => scrollToSection("portfolio")}
+                  className="px-5 py-3 rounded-xl cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold flex items-center space-x-2 transition-all shadow-xs"
+                  id="btn-action-portfolio"
+                >
+                  <span>Jelajahi Portofolio</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+
+                <button
+                  onClick={() => scrollToSection("resume")}
+                  className="px-5 py-3 rounded-xl cursor-pointer bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-semibold flex items-center space-x-2 transition-all"
+                  id="btn-action-resume"
+                >
+                  <span>Lihat Riwayat Kerja</span>
+                </button>
+
+                <button 
+                  onClick={handlePrint}
+                  className="p-3 border border-slate-200 bg-white text-slate-500 rounded-xl hover:text-indigo-600 hover:border-indigo-100 transition-all cursor-pointer"
+                  title="Cetak CV Lengkap (PDF friendly)"
+                  id="btn-action-print"
+                >
+                  <Printer className="h-4 w-4" />
+                </button>
+              </div>
+
+            </div>
+
+            {/* Right: Personal Photo Card & Technical Badges */}
+            <div className="lg:col-span-4 lg:pl-4" id="photo-card-wrapper">
+              <div className="border border-slate-100 p-6 rounded-2xl bg-white shadow-xs space-y-6 relative" id="photo-card">
+                
+                {/* Visual Photo (Placeholder styled beautifully to serve as branding) */}
+                <div className="w-full h-56 rounded-xl bg-gradient-to-tr from-slate-900 via-indigo-950 to-indigo-900 border border-slate-800 flex flex-col justify-between p-5 text-white relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl"></div>
                   
-                  <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-1.5">
-                    <span className="font-mono text-[11px] font-bold text-indigo-600">DES 2025 - APR 2026</span>
-                    <h4 className="font-sans font-bold text-slate-800 text-xs">Pertamina EP</h4>
-                    <p className="text-[11px] text-slate-500 leading-relaxed font-light">Merancang arsitektur terpadu TOGAF 10 untuk divisi BUMN energi nasional.</p>
+                  <div className="flex justify-between items-start">
+                    <Terminal className="h-5 w-5 text-indigo-400" />
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-400/20">M.Kom</span>
                   </div>
 
-                  <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-1.5">
-                    <span className="font-mono text-[11px] font-bold text-indigo-600">2023 - 2025</span>
-                    <h4 className="font-sans font-bold text-slate-800 text-xs">Sr. System Analyst</h4>
-                    <p className="text-[11px] text-slate-500 leading-relaxed font-light">Dispatched 10+ modul HRIS & core ERP nasional di Phintraco Group.</p>
+                  <div className="space-y-1">
+                    <p className="font-mono text-[10px] tracking-widest text-indigo-300">SYSTEM ARCHITECT</p>
+                    <p className="font-sans font-bold text-base leading-tight">Ferlin F. Turnip</p>
+                    <p className="text-[11px] text-slate-400">Jakarta, ID • TOGAF 10</p>
                   </div>
-
-                  <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-1.5">
-                    <span className="font-mono text-[11px] font-bold text-indigo-600">2021 - 2022</span>
-                    <h4 className="font-sans font-bold text-slate-800 text-xs">System Lead UNIBI</h4>
-                    <p className="text-[11px] text-slate-500 leading-relaxed font-light">Mengarsiteki 8+ simpul modul akademik dan HRIS internal universitas.</p>
-                  </div>
-
-                  <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-1.5">
-                    <span className="font-mono text-[11px] font-bold text-indigo-600">2021 - MEI 2023</span>
-                    <h4 className="font-sans font-bold text-slate-800 text-xs">Masters of Computer (M.Kom)</h4>
-                    <p className="text-[11px] text-slate-500 leading-relaxed font-light">Menamatkan Magister Sistem Informasi di STMIK LIKMI dengan IPK memuaskan.</p>
-                  </div>
-
                 </div>
+
+                {/* Quick Contacts */}
+                <div className="space-y-3.5 text-xs text-slate-600 font-mono" id="quick-contact-nodes">
+                  <div className="flex items-center space-x-2 border-b border-slate-50 pb-2">
+                    <Mail className="h-4 w-4 text-indigo-500 shrink-0" />
+                    <span className="truncate">{cvData.contact.email}</span>
+                  </div>
+
+                  <div className="flex items-center space-x-2 border-b border-slate-50 pb-2">
+                    <Phone className="h-4 w-4 text-emerald-500 shrink-0" />
+                    <span>{cvData.contact.phone}</span>
+                  </div>
+
+                  <div className="flex items-center space-x-2 pb-1">
+                    <MapPin className="h-4 w-4 text-rose-500 shrink-0" />
+                    <span>{cvData.contact.location}</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          {/* Core Pillars / Expertise highlights (Bento Grid) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4" id="bento-expertise">
+            
+            {/* Pillar 1 */}
+            <div className="p-6 bg-white border border-slate-100 rounded-2xl space-y-3 shadow-xs hover:border-indigo-100 transition-colors">
+              <span className="p-1 px-2 text-[10px] bg-indigo-50 text-indigo-700 font-mono font-bold rounded">Pilar 1</span>
+              <div className="flex items-center space-x-2">
+                <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600"><Users className="h-4 w-4" /></div>
+                <h3 className="font-sans font-bold text-slate-900 text-sm">IT Project Management</h3>
+              </div>
+              <p className="text-xs text-slate-500 leading-relaxed font-light">
+                Siklus pengerjaan Agile/Scrum termonitor secara presisi (facilitating sprint planning, retrospectives, and requirements validation) bersertifikat PMI.
+              </p>
+            </div>
+
+            {/* Pillar 2 */}
+            <div className="p-6 bg-white border border-slate-100 rounded-2xl space-y-3 shadow-xs hover:border-indigo-100 transition-colors">
+              <span className="p-1 px-2 text-[10px] bg-emerald-50 text-emerald-700 font-mono font-bold rounded">Pilar 2</span>
+              <div className="flex items-center space-x-2">
+                <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600"><Files className="h-4 w-4" /></div>
+                <h3 className="font-sans font-bold text-slate-900 text-sm">System Analysis & Specs</h3>
+              </div>
+              <p className="text-xs text-slate-500 leading-relaxed font-light">
+                Penyusun dokumentasi teringkas dan termapan (BRD, FSD, Project Charter), pemodelan UML, normalisasi database MySQL/SQL Server serta rest API.
+              </p>
+            </div>
+
+            {/* Pillar 3 */}
+            <div className="p-6 bg-white border border-slate-100 rounded-2xl space-y-3 shadow-xs hover:border-indigo-100 transition-colors">
+              <span className="p-1 px-2 text-[10px] bg-amber-50 text-amber-700 font-mono font-bold rounded">Pilar 3</span>
+              <div className="flex items-center space-x-2">
+                <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600"><Award className="h-4 w-4" /></div>
+                <h3 className="font-sans font-bold text-slate-900 text-sm">Enterprise Architecture</h3>
+              </div>
+              <p className="text-xs text-slate-500 leading-relaxed font-light">
+                Penjaga standar tata kelola BUMN bersertifikat **TOGAF 10** dalam merancang Arsitektur Bisnis, Aplikasi, Data, dan Teknologi (dengan ArchiMate).
+              </p>
+            </div>
+
+          </div>
+
+          {/* Major Career Highlights Timeline */}
+          <div className="bg-white border border-slate-100 p-6 sm:p-8 rounded-2xl shadow-xs space-y-6" id="career-highlights">
+            <div className="space-y-1">
+              <h3 className="font-sans font-bold text-slate-900 text-lg">Peta Karir & Pencapaian Penting</h3>
+              <p className="text-xs text-slate-500">Milestone perjalanan profesional Ferlin merintis sistem integrasi nasional.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4" id="timeline-years">
+              
+              <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-1.5">
+                <span className="font-mono text-[11px] font-bold text-indigo-600">DES 2025 - APR 2026</span>
+                <h4 className="font-sans font-bold text-slate-800 text-xs">Pertamina EP</h4>
+                <p className="text-[11px] text-slate-500 leading-relaxed font-light">Merancang arsitektur terpadu TOGAF 10 untuk divisi BUMN energi nasional.</p>
               </div>
 
-            </motion.div>
-          )}
+              <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-1.5">
+                <span className="font-mono text-[11px] font-bold text-indigo-600">2023 - 2025</span>
+                <h4 className="font-sans font-bold text-slate-800 text-xs">Sr. System Analyst</h4>
+                <p className="text-[11px] text-slate-500 leading-relaxed font-light">Dispatched 10+ modul HRIS & core ERP nasional di Phintraco Group.</p>
+              </div>
 
-          {/* TAB 2: RESUME SECTION */}
-          {currentTab === "resume" && (
-            <motion.div
-              key="resume-view"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              id="resume-view-container"
-            >
-              <ResumeSection />
-            </motion.div>
-          )}
+              <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-1.5">
+                <span className="font-mono text-[11px] font-bold text-indigo-600">2021 - 2022</span>
+                <h4 className="font-sans font-bold text-slate-800 text-xs">System Lead UNIBI</h4>
+                <p className="text-[11px] text-slate-500 leading-relaxed font-light">Mengarsiteki 8+ simpul modul akademik dan HRIS internal universitas.</p>
+              </div>
 
-          {/* TAB 3: PORTFOLIO */}
-          {currentTab === "portfolio" && (
-            <motion.div
-              key="portfolio-view"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              id="portfolio-view-container"
-            >
-              <PortfolioSection />
-            </motion.div>
-          )}
+              <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-1.5">
+                <span className="font-mono text-[11px] font-bold text-indigo-600">2021 - MEI 2023</span>
+                <h4 className="font-sans font-bold text-slate-800 text-xs">Masters of Computer (M.Kom)</h4>
+                <p className="text-[11px] text-slate-500 leading-relaxed font-light">Menamatkan Magister Sistem Informasi di STMIK LIKMI dengan IPK memuaskan.</p>
+              </div>
 
-          {/* TAB 4: BLOG & ARTIKEL MENU */}
-          {currentTab === "blog" && (
-            <motion.div
-              key="blog-view"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              id="blog-view-container"
-            >
-              <BlogSection onPostActive={setActiveBlogPost} />
-            </motion.div>
-          )}
+            </div>
+          </div>
 
-        </AnimatePresence>
+        </section>
+
+        {/* SECTION DIVIDER */}
+        <hr className="border-slate-100" />
+
+        {/* TAB 2: RESUME SECTION */}
+        <section id="resume" className="scroll-mt-24 space-y-6">
+          <div className="space-y-1 border-l-4 border-indigo-600 pl-4">
+            <span className="p-1 px-3 rounded-full bg-indigo-50 text-indigo-700 font-mono text-[10px] font-bold tracking-wider uppercase">RESUME & KEAHLIAN</span>
+            <h2 className="font-sans font-extrabold text-slate-900 text-2xl tracking-tight">Pengalaman Terstruktur & Kompetensi Ahli</h2>
+            <p className="text-xs text-slate-500 max-w-lg leading-relaxed font-light">
+              Sertifikasi TOGAF 10, rekam jejak arsitektur sistem, dan portofolio rekayasa teknologi digital.
+            </p>
+          </div>
+          <ResumeSection />
+        </section>
+
+        {/* SECTION DIVIDER */}
+        <hr className="border-slate-100" />
+
+        {/* TAB 3: PORTFOLIO */}
+        <section id="portfolio" className="scroll-mt-24">
+          <PortfolioSection />
+        </section>
+
+        {/* SECTION DIVIDER */}
+        <hr className="border-slate-100" />
+
+        {/* TAB 4: BLOG & ARTIKEL MENU */}
+        <section id="blog" className="scroll-mt-24">
+          <BlogSection onPostActive={setActiveBlogPost} />
+        </section>
+
       </main>
 
       {/* Footer Block for semantic layout W3C verification */}
@@ -409,22 +426,11 @@ export default function App() {
               © {new Date().getFullYear()} {cvData.name}. All Rights Reserved.
             </p>
             <p className="text-[11px] text-slate-400 leading-normal max-w-lg mx-auto font-light">
-              Website pribadi ini memenuhi standar **Technical SEO** & **GEO (Generative Engine Optimization)** dengan injeksi schema JSON-LD terstruktur secara dinamis.
+              Website portofolio profesional untuk visualisasi kualifikasi keahlian IT Project Management & Enterprise Architecture.
             </p>
           </div>
         </div>
       </footer>
-
-      {/* Technical SEO Audit Control Center Sidebar Panel */}
-      <AnimatePresence>
-        {isSeoOpen && (
-          <SeoPanel 
-            onClose={() => setIsSeoOpen(false)} 
-            activeBlogTitle={activeBlogPost?.seoMetadata.title}
-            activeBlogDesc={activeBlogPost?.seoMetadata.description}
-          />
-        )}
-      </AnimatePresence>
 
     </div>
   );

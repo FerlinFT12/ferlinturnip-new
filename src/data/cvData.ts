@@ -240,10 +240,7 @@ export const portfolios: ProjectPortfolio[] = [
       "Analyzed and compiled fully unified Business, Application, Data, and Technology architectures using TOGAF 10 Phase A–H.",
       "Conducted extensive stakeholder workshops for C-level alignments.",
       "Ensured strategic traceability of 15+ concurrent software projects mapping back into Pertamina EP's core business initiatives."
-    ],
-    deliverables: {
-      achievement: "https://drive.google.com/file/d/1BEgySRqsp7T6rwIfKrX_8jag7UXtb4WW/view?usp=sharing"
-    }
+    ]
   },
   {
     id: "p2",
@@ -257,13 +254,7 @@ export const portfolios: ProjectPortfolio[] = [
       "Owned full requirements and functional specification documentation (BRD, FSD, Project Charter).",
       "Designed database schema supporting multi-tenant hierarchical structures with modular subcomponents.",
       "Analyzed workflows and UI designs to reduce employee onboarding delays by 35%."
-    ],
-    deliverables: {
-      charter: "https://drive.google.com/file/d/1rTwev1p_FaSZZX89EOTikkIg8xfe1UT2/view?usp=sharing",
-      fsd: "https://drive.google.com/file/d/1NtJZCmdYxPVg3puYfsPuRN04W5k-OYNS/view?usp=sharing",
-      brd: "https://drive.google.com/file/d/13AgmRMyygeBKBg4zEd9XbvJkEGuyI8Nw/view?usp=sharing",
-      uiux: "https://xd.adobe.com/view/e935fa72-9dcc-4361-a782-186e59515596-bc66/"
-    }
+    ]
   },
   {
     id: "p3",
@@ -277,13 +268,7 @@ export const portfolios: ProjectPortfolio[] = [
       "Constructed a robust modular course creation and assessment system with dynamic test timing safeguards.",
       "Delivered full system design, system component interactions, and entity relations modeled in StarUML.",
       "Integrated secure authentication hooks enabling frictionless training tracking for corporate client dashboards."
-    ],
-    deliverables: {
-      charter: "https://drive.google.com/file/d/19ARpLSvINsvhpc9-V8flEitGulfVavZO/view",
-      fsd: "https://drive.google.com/file/d/1YJjfDhgFiTWBK_DYUlMAUL_n5Jx8PJOT/view?usp=sharing",
-      brd: "https://drive.google.com/file/d/1U3VHLIkzNteC_qTPNunE2i6UVDe_lutu/view?usp=sharing",
-      uiux: "https://www.figma.com/design/ATOJWurJDq8e9MsiKCQOSl/LMS?node-id=112-300"
-    }
+    ]
   },
   {
     id: "p4",
@@ -297,10 +282,7 @@ export const portfolios: ProjectPortfolio[] = [
       "Engineered full TOGAF-centric schema to increase efficiency of aid tracking and charity distribution.",
       "Directly presented artifacts to the Chair of Baznas Majalengka, secure formal implementation clearance.",
       "Mapped technology assets to ensure high system transparency and security audit standards."
-    ],
-    deliverables: {
-      achievement: "https://drive.google.com/file/d/1x2SJgC3Thve9jHoLi1liTSimpleLinkForBaznas"
-    }
+    ]
   },
   {
     id: "p5",
@@ -314,10 +296,7 @@ export const portfolios: ProjectPortfolio[] = [
       "Programmed event-ready checkout flows with instantaneous local storage failovers.",
       "Engineered inventory validation mechanisms preventing catalog mismatches under high traffic.",
       "Created fully responsive transaction reports used directly on the retail floor."
-    ],
-    deliverables: {
-      achievement: "https://drive.google.com/file/d/1Ta8jpu41lXJDyD_zPAxYV8snDCR2FDPB/view?usp=sharing"
-    }
+    ]
   },
   {
     id: "p6",
@@ -331,10 +310,7 @@ export const portfolios: ProjectPortfolio[] = [
       "Architected specialized batch tracking schemas to handle localized medicine inventory constraints.",
       "Documented UML diagrams, including sequence paths for complex transaction handshakes.",
       "Liaised with pharmacists and operations lead to achieve 100% specification alignment."
-    ],
-    deliverables: {
-      achievement: "https://drive.google.com/file/d/1okm0FMiQw0RrjqGKOF8Z2sTHUSiHAYcO/view?usp=sharing"
-    }
+    ]
   }
 ];
 

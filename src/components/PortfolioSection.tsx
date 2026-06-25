@@ -14,7 +14,8 @@ import {
   Activity, 
   FileText,
   X,
-  Target
+  Target,
+  Lock
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -122,30 +123,6 @@ export default function PortfolioSection() {
         </AnimatePresence>
       </div>
 
-      {/* Embedded Document Folder Callout & Info */}
-      <div className="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 flex flex-col lg:flex-row items-center justify-between gap-6" id="gdrive-callout">
-        <div className="space-y-2 text-center lg:text-left">
-          <h3 className="font-sans font-extrabold text-indigo-900 text-lg flex items-center justify-center lg:justify-start space-x-2">
-            <Files className="h-5 w-5 text-indigo-600" />
-            <span>Folder Dokumentasi Lengkap di Google Drive</span>
-          </h3>
-          <p className="text-xs text-indigo-700 max-w-xl leading-relaxed">
-            Ferlin menyediakan folder Google Drive terbuka yang berisi contoh berkas **Project Charter**, **FSD (Functional Specification)**, **BRD (Business Requirements)**, **UI/UX Design**, dan **Bukti Capaian** resmi untuk audit kualifikasi Anda.
-          </p>
-        </div>
-
-        <a 
-          href="https://drive.google.com/drive/folders/1hh9W7PtH6am4G6aD7K4dKvIt1PUhAOKq?usp=sharing"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold flex items-center space-x-2 shadow-xs shrink-0 cursor-pointer"
-          id="btn-gdrive-external"
-        >
-          <span>Akses Folder G-Drive</span>
-          <ExternalLink className="h-4 w-4" />
-        </a>
-      </div>
-
       {/* Project Detail Modal Overlay */}
       <AnimatePresence>
         {activeProject && (
@@ -207,80 +184,14 @@ export default function PortfolioSection() {
                   </div>
                 </div>
 
-                {/* Available Spec Deliverables / Artifacts */}
-                <div className="space-y-3 bg-slate-50 border border-slate-100 p-4 rounded-xl">
-                  <p className="text-xs font-bold text-slate-700 uppercase tracking-wider font-mono">
-                    Verifikasi Dokumen Specs (Artifacts):
-                  </p>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" id="artifacts-grid">
-                    
-                    {activeProject.deliverables?.charter && (
-                      <a 
-                        href={activeProject.deliverables.charter} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="p-2 border border-slate-200 bg-white hover:border-indigo-400 rounded-lg text-xs font-medium text-slate-600 flex items-center space-x-2 hover:text-indigo-600"
-                      >
-                        <FileCheck2 className="h-4 w-4 text-indigo-500 shrink-0" />
-                        <span className="truncate">Project Charter Document</span>
-                      </a>
-                    )}
-
-                    {activeProject.deliverables?.brd && (
-                      <a 
-                        href={activeProject.deliverables.brd} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="p-2 border border-slate-200 bg-white hover:border-indigo-400 rounded-lg text-xs font-medium text-slate-600 flex items-center space-x-2 hover:text-indigo-600"
-                      >
-                        <Files className="h-4 w-4 text-blue-500 shrink-0" />
-                        <span className="truncate">Business Specs (BRD)</span>
-                      </a>
-                    )}
-
-                    {activeProject.deliverables?.fsd && (
-                      <a 
-                        href={activeProject.deliverables.fsd} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="p-2 border border-slate-200 bg-white hover:border-indigo-400 rounded-lg text-xs font-medium text-slate-600 flex items-center space-x-2 hover:text-indigo-600"
-                      >
-                        <FileCheck2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                        <span className="truncate">Functional Specs (FSD)</span>
-                      </a>
-                    )}
-
-                    {activeProject.deliverables?.uiux && (
-                      <a 
-                        href={activeProject.deliverables.uiux} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="p-2 border border-slate-200 bg-white hover:border-indigo-400 rounded-lg text-xs font-medium text-slate-600 flex items-center space-x-2 hover:text-indigo-600"
-                      >
-                        <Figma className="h-4 w-4 text-orange-500 shrink-0" />
-                        <span className="truncate">Interactive UI/UX Mockup</span>
-                      </a>
-                    )}
-
-                    {activeProject.deliverables?.achievement && (
-                      <a 
-                        href={activeProject.deliverables.achievement} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="p-2 border border-slate-200 bg-white hover:border-indigo-400 rounded-lg text-xs font-medium text-slate-600 flex items-center space-x-2 hover:text-indigo-600 col-span-1 sm:col-span-2"
-                      >
-                        <ExternalLink className="h-4 w-4 text-amber-500 shrink-0" />
-                        <span className="truncate">Dokumen Capaian / Sertifikasi Terlampir</span>
-                      </a>
-                    )}
-
-                    {!activeProject.deliverables || Object.keys(activeProject.deliverables).length === 0 ? (
-                      <div className="text-slate-400 text-xs py-2 col-span-2 text-center italic">
-                        Dokumen diintegrasikan dalam folder master G-Drive (Klik link di luar modal).
-                      </div>
-                    ) : null}
-
+                {/* NDA Confidentiality Note */}
+                <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl flex items-start space-x-2.5">
+                  <Lock className="h-5 w-5 text-indigo-500 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="text-xs font-bold text-slate-700 font-sans">Kepatuhan Kerahasiaan (NDA):</p>
+                    <p className="text-[11px] text-slate-500 leading-relaxed font-light">
+                      Dokumen spesifikasi rinci (BRD, FSD, Project Charter) bersifat rahasia perusahaan dan tidak dipublikasikan secara terbuka demi keamanan sistem korporasi. Salinan resmi untuk penilaian kualifikasi dapat ditunjukkan secara aman atas permintaan.
+                    </p>
                   </div>
                 </div>
 
